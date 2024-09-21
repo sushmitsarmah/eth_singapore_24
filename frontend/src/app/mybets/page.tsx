@@ -139,10 +139,13 @@ import "chart.js/auto";
 import btc from "../../components/assets/btc.png";
 import { useRouter } from "next/navigation";
 import Avatar from "../../components/assets/avatar.png";
+import { useAppKit } from '@reown/appkit/react'
+
 
 const profile = () => {
   const router = useRouter();
 
+  const { open, close } = useAppKit()
   // User data and bets
   const [userProfile, setUserProfile] = useState({
     username: "buddyharshal.eth", // ENS domain as the username
@@ -250,9 +253,7 @@ const profile = () => {
             <button
               className="bg-gradient-to-r from-green-400 to-green-600 text-white px-6 py-3 p-6 rounded-md hover:scale-105 transition"
               onClick={() =>
-                router.push(
-                  "https://global-stg.transak.com/?apiKey=4aae77ea-df1a-4a88-9095-89625873c08e"
-                )
+                open({view:'OnRampProviders'})
               }
             >
               Purchase Flow

@@ -435,6 +435,7 @@ import Navbar from "@/components/Navbar";
 import Slider from "@/components/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import coinImage from '../../components/assets/coina.png';
+import { EvmPriceServiceConnection } from "@pythnetwork/pyth-evm-js";
 
 // Example token data structure (questions for each round)
 const allTokensRound1 = [
