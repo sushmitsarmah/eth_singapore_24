@@ -12,7 +12,7 @@ import { headers } from 'next/headers'
 
 import { cookieToInitialState } from 'wagmi'
 import { config } from '@/config'
-import AppKitProvider from '@/context'
+import AppKitProvider from '@/context/index'
 
 // FONTS
 const geistSans = localFont({
