@@ -2,7 +2,7 @@ import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { cookieStorage, createStorage } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
-
+import { morphHolesky } from "viem/chains";
 // Get projectId from https://cloud.walletconnect.com
 // export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 export const projectId = "50ebdda4ae288d5a600a67d2b845506e";
@@ -17,7 +17,7 @@ export const metadata = {
 }
 
 // Create wagmiConfig
-const chains = [mainnet, sepolia] as const
+const chains = [mainnet, sepolia, morphHolesky] as const
 export const config = defaultWagmiConfig({
   chains,
   projectId,
