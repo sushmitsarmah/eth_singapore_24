@@ -2,9 +2,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Cricket from '../assets/football.jpeg';
-import Football1 from '../assets/football1.png';
-import Football2 from '../assets/football2.png';
+import Cricket from '../assets/image.png';
+import Football1 from '../assets/football.png';
+import Football2 from '../assets/football3.png';
 const sportsData = [
   { name: 'Football', image: Cricket },
   { name: 'Football1', image: Football1 },
