@@ -15,7 +15,7 @@ func indexHandler(c *fiber.Ctx) error {
 }
 
 func fetchDataHandler(c *fiber.Ctx) error {
-	data, err := modules.ReadFromDb(10)
+	data, err := modules.ReadFromDb(100)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
