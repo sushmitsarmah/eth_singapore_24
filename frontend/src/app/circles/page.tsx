@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Dashboard from "./dashboard";
-import CirclesOnboarding from './circles'
+import CirclesOnboarding from './circles';
+
+// Define the prop type for CirclesOnboarding
+interface CirclesOnboardingProps {
+  setTrustRelations: React.Dispatch<React.SetStateAction<never[]>>;
+}
+
+// Define the prop type for CirclesOnboarding
+interface CirclesOnboardingProps {
+  setTrustRelations: React.Dispatch<React.SetStateAction<never[]>>;
+}
 import { CirclesSDK } from "../../context/CirclesSdk";
 
 export default function App() {
