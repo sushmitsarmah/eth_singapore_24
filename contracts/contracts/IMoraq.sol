@@ -36,7 +36,7 @@ interface IMoraq is IMoraqEvents {
 
     /// @notice Fetches prices from the oracle after the round ends.
     /// @param roundId The unique identifier for the round.
-    function fetchPrices(uint256 roundId) external;
+    function fetchPrices(uint256 roundId, bytes[] calldata priceUpdate) external;
 
     /// @notice Declares the winners based on the fetched prices.
     /// @param roundId The unique identifier for the round.

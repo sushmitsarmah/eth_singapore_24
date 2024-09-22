@@ -40,5 +40,9 @@ interface IMoraqEvents {
         address[] winners,
         uint256 totalReward
     );
+
+    event RoundEnded(
+        uint256 roundId
+    );
 }
 

@@ -36,8 +36,8 @@ contract Moraq is IMoraq {
         round.endTime = block.timestamp + 1 weeks;
 
         if (block.timestamp >= round.endTime) {
-            fetchPrices(currentRoundId);
-            declareWinners(currentRoundId);
+            // on rounded ended call fetchPrices in the frontend and then declare winners
+            emit RoundEnded(currentRoundId);
         }
     }
 
@@ -98,15 +98,21 @@ contract Moraq is IMoraq {
         round.participants.push(msg.sender);
     }
 
-    function fetchPrices(uint256 roundId) public onlyOwner {
+    function fetchPrices(uint256 roundId, bytes[] calldata priceUpdate) public onlyOwner {
         MoraqStructs.Round storage round = rounds[roundId];
         require(block.timestamp >= round.endTime, "Round is still active");
 
         for (uint256 i = 0; i < round.questionIds.length; i++) {
             MoraqStructs.Question storage question = round.questions[i];
+
+            // fetches multiple coin data. and updates
+            uint fee = question.pyth.getUpdateFee(priceUpdate);
+            question.pyth.updatePriceFeeds{ value: fee }(priceUpdate);
+
             PythStructs.Price memory price = question.pyth.getPriceNoOlderThan(question.usdPriceId, 60);
             question.answer = price.price > question.targetPrice;
         }
+        declareWinners(roundId);
     }
 
     function declareWinners(uint256 roundId) public onlyOwner {
