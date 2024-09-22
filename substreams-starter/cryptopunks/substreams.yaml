@@ -1,0 +1,56 @@
+specVersion: v0.1.0
+package:
+  name: cryptopunks
+  version: v0.1.0
+
+protobuf:
+  files:
+    - contract.proto
+  importPaths:
+    - ./proto
+  excludePaths:
+    # - sf/substreams
+    - google
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/substreams.wasm
+
+modules:
+
+  - name: map_events
+    kind: map
+    initialBlock: 20795136
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:contract.v1.Events
+  - name: map_calls
+    kind: map
+    initialBlock: 20795136
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:contract.v1.Calls
+  - name: map_events_calls
+    kind: map
+    initialBlock: 20795136
+    inputs:
+      - map: map_events
+      - map: map_calls
+    output:
+      type: proto:contract.v1.EventsCalls
+network: mainnet
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
+    schema: "./schema.sql"
+    wire_protocol_access: true
+    engine: postgres
+    postgraphile_frontend:
+      enabled: true
+    pgweb_frontend:
+      enabled: true

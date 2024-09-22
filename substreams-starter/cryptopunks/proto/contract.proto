@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package contract.v1;
+message Events {
+    repeated Cpunks_Assign cpunks_assigns = 1;
+    repeated Cpunks_PunkBidEntered cpunks_punk_bid_entereds = 2;
+    repeated Cpunks_PunkBidWithdrawn cpunks_punk_bid_withdrawns = 3;
+    repeated Cpunks_PunkBought cpunks_punk_boughts = 4;
+    repeated Cpunks_PunkNoLongerForSale cpunks_punk_no_longer_for_sales = 5;
+    repeated Cpunks_PunkOffered cpunks_punk_offereds = 6;
+    repeated Cpunks_PunkTransfer cpunks_punk_transfers = 7;
+    repeated Cpunks_Transfer cpunks_transfers = 8;
+}
+message Calls {
+    repeated Cpunks_BuyPunkCall cpunks_call_buy_punks = 1;
+    repeated Cpunks_EnterBidForPunkCall cpunks_call_enter_bid_for_punks = 2;
+}
+message EventsCalls {
+    Events events = 1;
+    Calls calls = 2;
+}
+message Cpunks_Assign {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    bytes to = 5;
+    string punk_index = 6;
+}
+message Cpunks_PunkBidEntered {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    string punk_index = 5;
+    string value = 6;
+    bytes from_address = 7;
+}
+message Cpunks_PunkBidWithdrawn {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    string punk_index = 5;
+    string value = 6;
+    bytes from_address = 7;
+}
+message Cpunks_PunkBought {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    string punk_index = 5;
+    string value = 6;
+    bytes from_address = 7;
+    bytes to_address = 8;
+}
+message Cpunks_PunkNoLongerForSale {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    string punk_index = 5;
+}
+message Cpunks_PunkOffered {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    string punk_index = 5;
+    string min_value = 6;
+    bytes to_address = 7;
+}
+message Cpunks_PunkTransfer {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    bytes from = 5;
+    bytes to = 6;
+    string punk_index = 7;
+}
+message Cpunks_Transfer {
+    string evt_tx_hash = 1;
+    uint32 evt_index = 2;
+    google.protobuf.Timestamp evt_block_time = 3;
+    uint64 evt_block_number = 4;
+    bytes from = 5;
+    bytes to = 6;
+    string value = 7;
+}
+  
+message Cpunks_BuyPunkCall {
+    string call_tx_hash = 1;
+    google.protobuf.Timestamp call_block_time = 2;
+    uint64 call_block_number = 3;
+    uint64 call_ordinal = 4;
+    bool call_success = 5;
+    string punk_index = 6;
+}
+message Cpunks_EnterBidForPunkCall {
+    string call_tx_hash = 1;
+    google.protobuf.Timestamp call_block_time = 2;
+    uint64 call_block_number = 3;
+    uint64 call_ordinal = 4;
+    bool call_success = 5;
+    string punk_index = 6;
+}
