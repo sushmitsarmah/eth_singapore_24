@@ -3,6 +3,7 @@ package modules
 import (
 	"database/sql"
 	"fmt"
+	"substreams/structs"
 
 	pbchanges "github.com/streamingfast/substreams-sink-database-changes/pb/sf/substreams/sink/database/v1"
 )
@@ -61,4 +62,31 @@ func SaveToDb(changes *pbchanges.DatabaseChanges) {
 			fmt.Errorf("unable to insert data into database: %w", err)
 		}
 	}
+}
+
+func ReadFromDb(count int) ([]structs.BalanceChange, error) {
+	db := ConnectToDb()
+	defer db.Close()
+
+	rows, err := db.Query("SELECT change_type, contract, owner, amount, transaction_id, new_balance, block_num, timestamp, old_balance FROM balance_changes ORDER BY timestamp DESC limit $1", count)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read data from database: %w", err)
+	}
+	defer rows.Close()
+
+	var results []structs.BalanceChange
+	for rows.Next() {
+		var bc structs.BalanceChange
+		if err := rows.Scan(&bc.ChangeType, &bc.Contract, &bc.Owner, &bc.Amount, &bc.TransactionID, &bc.NewBalance, &bc.BlockNum, &bc.Timestamp, &bc.OldBalance); err != nil {
+			return nil, fmt.Errorf("unable to scan row: %w", err)
+		}
+		results = append(results, bc)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return results, nil
+
 }
