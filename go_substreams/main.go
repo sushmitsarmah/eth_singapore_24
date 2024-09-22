@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/streamingfast/cli"
@@ -74,7 +76,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		manifestPath,
 		outputModuleName,
 		// This is the block range, in our case defined as Substreams module's start block and up forever
-		"20800257:20800258",
+		"20800257:",
 		zlog,
 		tracer,
 	)
@@ -105,15 +107,63 @@ func handleBlockScopedData(ctx context.Context, data *pbsubstreamsrpc.BlockScope
 		return fmt.Errorf("unable to unmarshal database changes: %w", err)
 	}
 
+	// Connect to the PostgreSQL database
+	connStr := "user=sushmitmacair dbname=substreams sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return fmt.Errorf("unable to connect to database: %w", err)
+	}
+	defer db.Close()
+
 	for _, value := range changes.TableChanges {
-		// fmt.Println(value.GetTable())
-		for _, val := range value.Fields {
-			fmt.Println(val)
+		// Extract the fields from the value
+		var changeType, contract, owner, transactionID string
+		var amount, newBalance, oldBalance string
+		var blockNum string
+		var timestamp string
+
+		for _, field := range value.Fields {
+			switch field.Name {
+			case "change_type":
+				changeType = field.NewValue
+			case "contract":
+				contract = field.NewValue
+			case "owner":
+				owner = field.NewValue
+			case "amount":
+				amount = field.NewValue
+			case "transaction_id":
+				transactionID = field.NewValue
+			case "new_balance":
+				newBalance = field.NewValue
+			case "block_num":
+				blockNum = field.NewValue
+			case "timestamp":
+				timestamp = field.NewValue
+			case "old_balance":
+				oldBalance = field.NewValue
+			}
+		}
+
+		// Insert the data into the PostgreSQL table
+		_, err := db.Exec(`
+			INSERT INTO balance_changes (change_type, contract, owner, amount, transaction_id, new_balance, block_num, timestamp, old_balance)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+			changeType, contract, owner, amount, transactionID, newBalance, blockNum, timestamp, oldBalance)
+		if err != nil {
+			return fmt.Errorf("unable to insert data into database: %w", err)
 		}
 	}
 
+	// for _, value := range changes.TableChanges {
+	// 	fmt.Println("##########\n")
+	// 	fmt.Println(value.GetTable())
+	// 	for _, val := range value.Fields {
+	// 		fmt.Println(val)
+	// 	}
+	// }
+
 	// fmt.Println(data.GetOutput().GetMapOutput())
-	// fmt.Println("##########\n")
 
 	fmt.Printf("Block #%d (%s) data received with %d changes\n", data.Clock.Number, data.Clock.Id, len(changes.TableChanges))
 
