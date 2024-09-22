@@ -98,7 +98,7 @@ contract Moraq is IMoraq {
         round.participants.push(msg.sender);
     }
 
-    function fetchPrices(uint256 roundId, bytes[] calldata priceUpdate) public onlyOwner {
+    function fetchPrices(uint256 roundId, bytes[] calldata priceUpdate) external payable onlyOwner {
         MoraqStructs.Round storage round = rounds[roundId];
         require(block.timestamp >= round.endTime, "Round is still active");
 
