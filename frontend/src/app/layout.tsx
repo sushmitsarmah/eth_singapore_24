@@ -4,7 +4,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Web3Modal } from '../components/context/Web3Modal';
 import Head from "next/head";
 import '@fontsource/luckiest-guy'; // Add this line
 
