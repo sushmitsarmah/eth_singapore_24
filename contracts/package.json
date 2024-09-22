@@ -9,8 +9,10 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy": "hardhat run ignition/modules/Lock.ts",
     "clean": "hardhat clean",
-    "node": "hardhat node"
+    "node": "hardhat node",
+    "deploy-local": "npx hardhat ignition deploy ignition/modules/Moraq.ts --network localhost",
+    "deploy-airdao-testnet": "npx hardhat ignition deploy ignition/modules/Moraq.ts --network airdao_testnet",
+    "deploy-flow-testnet": "npx hardhat ignition deploy ignition/modules/Moraq.ts --network flow_testnet"
   }
 }
