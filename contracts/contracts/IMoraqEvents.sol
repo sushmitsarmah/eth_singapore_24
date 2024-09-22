@@ -6,15 +6,17 @@ pragma solidity ^0.8.24;
 /// @dev This interface can be used for listening to the updates for off-chain and testing purposes.
 interface IMoraqEvents {
     /// @dev Emitted when a new question is created.
+    /// @param roundId The unique ID of the question.
     /// @param questionId The unique ID of the question.
     /// @param creator The address of the user who created the question.
-    /// @param question The text of the question.
-    /// @param stakeAmount The amount staked for the question.
+    /// @param coinID The text of the question.
+    /// @param targetPrice The amount staked for the question.
     event QuestionCreated(
+        uint256 indexed roundId,
         uint256 indexed questionId,
         address indexed creator,
-        string question,
-        uint256 stakeAmount
+        string coinID,
+        int64 targetPrice
     );
 
     /// @dev Emitted when a user responds to a question.
