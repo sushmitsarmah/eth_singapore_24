@@ -20,15 +20,14 @@ const Navbar = () => {
           </div>
         </Link>
 
-        <Link href="/games" passHref>
-          <div className="text-lg text-[#c8cacd] hover:text-[#71FF4C] transition duration-300 cursor-pointer">
-            Games
-          </div>
-        </Link>
-
         <Link href="/create" passHref>
           <div className="text-lg text-[#c8cacd] hover:text-[#71FF4C] transition duration-300 cursor-pointer">
             Earn
+          </div>
+        </Link>
+        <Link href="/leaderboard" passHref>
+          <div className="text-lg text-[#c8cacd] hover:text-[#71FF4C] transition duration-300 cursor-pointer">
+            Ranks
           </div>
         </Link>
 
