@@ -13,14 +13,12 @@ interface IMoraq is IMoraqEvents {
 
     /// @notice Creates a new question for a round.
     /// @param roundId The unique identifier for the round.
-    /// @param questionId The unique identifier for the question.
     /// @param coinId The identifier for the coin (e.g., BTC, ETH).
     /// @param targetPrice The target price to compare against.
     /// @param pythContract The address of the Pyth contract.
     /// @param usdPriceId The price ID for USD.
     function createQuestion(
         uint256 roundId,
-        uint256 questionId,
         string calldata coinId,
         int64 targetPrice,
         address pythContract,
@@ -49,6 +47,9 @@ interface IMoraq is IMoraqEvents {
     function proceedToNextRound() external;
 
     function getRoundId() external view returns (uint256);
+    function getCurrentRoundStartTime() external view returns (uint256);
+    function getCurrentRoundEndTime() external view returns (uint256);
+    function getCurrentRoundQuestionIds() external view returns (uint256[] memory);
 
     function getQuestion(uint256 roundId, uint256 questionId) external view returns (MoraqStructs.Question memory);
 

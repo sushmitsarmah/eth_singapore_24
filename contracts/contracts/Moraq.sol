@@ -28,7 +28,6 @@ contract Moraq is IMoraq {
     }
 
     function startNewRound() public onlyOwner {
-        currentRoundId++;
         rounds.push();
         MoraqStructs.Round storage round = rounds[currentRoundId];
         round.roundId = currentRoundId;
@@ -39,6 +38,18 @@ contract Moraq is IMoraq {
             // on rounded ended call fetchPrices in the frontend and then declare winners
             emit RoundEnded(currentRoundId);
         }
+    }
+
+    function getCurrentRoundStartTime() external view returns (uint256) {
+        return rounds[currentRoundId].startTime;
+    }
+
+    function getCurrentRoundEndTime() external view returns (uint256) {
+        return rounds[currentRoundId].endTime;
+    }
+
+    function getCurrentRoundQuestionIds() external view returns (uint256[] memory) {
+        return rounds[currentRoundId].questionIds;
     }
 
     function getRoundId() external view returns (uint256) {
@@ -55,13 +66,13 @@ contract Moraq is IMoraq {
 
     function createQuestion(
         uint256 roundId,
-        uint256 questionId,
         string calldata coinId,
         int64 targetPrice,
         address pythContract,
         bytes32 usdPriceId
     ) external onlyOwner {
         MoraqStructs.Round storage round = rounds[roundId];
+        uint256 questionId = round.questionIds.length;
         round.questions[questionId] = MoraqStructs.Question({
             questionId: questionId,
             coinId: coinId,
@@ -172,6 +183,7 @@ contract Moraq is IMoraq {
                     payable(user).transfer(winnings);
                 }
             }
+            currentRoundId++;
             startNewRound();
         }
     }
