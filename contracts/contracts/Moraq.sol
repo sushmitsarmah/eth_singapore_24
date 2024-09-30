@@ -56,12 +56,37 @@ contract Moraq is IMoraq {
         return currentRoundId;
     }
 
+    function getRoundUserStake(address userAddress) external view returns (uint256) {
+        return rounds[currentRoundId].userStake[userAddress];
+    }
+
     function getQuestion(uint256 roundId, uint256 questionId) external view returns (MoraqStructs.Question memory) {
         return rounds[roundId].questions[questionId];
     }
 
-    function getRoundUserAnswers(uint256 roundId, address user) external view returns (MoraqStructs.UserAnswer[] memory) {
-        return rounds[roundId].userAnswers[user];
+    function getRoundUserAnswers(
+        uint256 roundId,
+        address user,
+        uint256 start,
+        uint256 count
+    ) external view returns (MoraqStructs.UserAnswer[] memory) {
+        MoraqStructs.Round storage round = rounds[roundId];
+        uint256 numQuestions = round.questionIds.length;
+        require(start < numQuestions, "Start index out of bounds");
+
+        uint256 end = start + count;
+        if (end > numQuestions) {
+            end = numQuestions;
+        }
+
+        MoraqStructs.UserAnswer[] memory userAnswers = new MoraqStructs.UserAnswer[](end - start);
+
+        for (uint256 i = start; i < end; i++) {
+            uint256 questionId = round.questionIds[i];
+            userAnswers[i - start] = round.userAnswers[user][questionId];
+        }
+
+        return userAnswers;
     }
 
     function createQuestion(
@@ -87,6 +112,15 @@ contract Moraq is IMoraq {
         emit QuestionCreated(roundId, questionId, msg.sender, coinId, targetPrice);
     }
 
+    function getUserAnswer(
+        uint256 roundId,
+        uint256 questionId,
+        address user
+    ) public view returns (bool answer, uint256 stake) {
+        MoraqStructs.UserAnswer storage userAnswer = rounds[roundId].userAnswers[user][questionId];
+        return (userAnswer.answer, userAnswer.stake);
+    }
+
     function answerQuestion(
         uint256 roundId,
         uint256 questionId,
@@ -103,7 +137,7 @@ contract Moraq is IMoraq {
             stake: stake
         });
 
-        round.userAnswers[msg.sender][questionId % 6] = userAnswer;
+        round.userAnswers[msg.sender][questionId] = userAnswer;
         round.userStake[msg.sender] += stake;
         round.totalStaked += stake;
         round.participants.push(msg.sender);
@@ -111,7 +145,7 @@ contract Moraq is IMoraq {
 
     function fetchPrices(uint256 roundId, bytes[] calldata priceUpdate) external payable onlyOwner {
         MoraqStructs.Round storage round = rounds[roundId];
-        require(block.timestamp >= round.endTime, "Round is still active");
+        // require(block.timestamp >= round.endTime, "Round is still active");
 
         for (uint256 i = 0; i < round.questionIds.length; i++) {
             MoraqStructs.Question storage question = round.questions[i];
@@ -123,7 +157,7 @@ contract Moraq is IMoraq {
             PythStructs.Price memory price = question.pyth.getPriceNoOlderThan(question.usdPriceId, 60);
             question.answer = price.price > question.targetPrice;
         }
-        declareWinners(roundId);
+        // declareWinners(roundId);
     }
 
     function declareWinners(uint256 roundId) public onlyOwner {

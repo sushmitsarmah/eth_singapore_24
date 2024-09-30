@@ -31,7 +31,7 @@ library MoraqStructs {
         uint256 endTime; // Timestamp when the round ends
         mapping(uint256 => Question) questions; // Mapping of questionId to Question
         uint256[] questionIds; 
-        mapping(address => UserAnswer[]) userAnswers; // Mapping of user address to their answers
+        mapping(address => mapping(uint256 => UserAnswer)) userAnswers;
         mapping(address => uint256) userStake; // Mapping of user address to their answers
         uint256 totalStaked; // Total amount staked in the round
         address[] participants; // List of participants in the round

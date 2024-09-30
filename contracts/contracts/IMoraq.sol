@@ -53,6 +53,11 @@ interface IMoraq is IMoraqEvents {
 
     function getQuestion(uint256 roundId, uint256 questionId) external view returns (MoraqStructs.Question memory);
 
-    function getRoundUserAnswers(uint256 roundId, address user) external view returns (MoraqStructs.UserAnswer[] memory);
+    function getRoundUserAnswers(uint256 roundId, address user, uint256 start, uint256 count) external view returns (MoraqStructs.UserAnswer[] memory);
     
+    function getUserAnswer(
+        uint256 roundId,
+        uint256 questionId,
+        address user
+    ) external view returns (bool answer, uint256 stake);
 }
